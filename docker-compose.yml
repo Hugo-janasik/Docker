@@ -2,45 +2,59 @@ version: "3.5"
 services:
   poll:
     build: ./poll/
+    container_name: poll
     ports:
       - "5000:80"
     networks:
       - poll-tier
     environment:
       - DB=redis
+    restart: always
 
   redis:
     image: "redis:alpine"
+    container_name: redis
     expose:
       - "6379"
-    restart: always
     networks:
       - poll-tier
       - back-tier
+    restart: always
 
   result:
     build: ./result
+    container_name: result
     ports:
       - "5001:80"
     networks:
       - result-tier
     environment:
-      - HOST=db
+      - DBHOST=postgres://postgres:password@db/postgres
+    restart: always
 
   db:
     image: "postgres"
+    container_name: db
     networks:
       - result-tier
       - back-tier
     volumes:
       - ./db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=db-data
+    restart: always
 
   worker:
     build: ./worker
+    container_name: worker
     networks:
       - back-tier
     environment:
       - POSTGRES=db
+      - REDIS=redis
+    restart: always
 
 networks:
   poll-tier:
