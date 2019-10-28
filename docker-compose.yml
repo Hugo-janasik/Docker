@@ -6,19 +6,27 @@ services:
       - "5000:80"
     networks:
       - poll-tier
+    environment:
+      - DB=redis
+
   redis:
     image: "redis:alpine"
     expose:
       - "6379"
+    restart: always
     networks:
       - poll-tier
       - back-tier
+
   result:
     build: ./result
     ports:
       - "5001:80"
     networks:
       - result-tier
+    environment:
+      - HOST=db
+
   db:
     image: "postgres"
     networks:
@@ -26,10 +34,14 @@ services:
       - back-tier
     volumes:
       - ./db-data:/var/lib/postgresql/data
+
   worker:
     build: ./worker
     networks:
       - back-tier
+    environment:
+      - POSTGRES=db
+
 networks:
   poll-tier:
     name: poll-tier

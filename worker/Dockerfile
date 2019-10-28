@@ -7,7 +7,7 @@ RUN mvn dependency:resolve
 RUN mvn package
 
 FROM openjdk:8-jre-alpine
-ENV POSTGRES=db
+#ENV POSTGRES=db
 ENV REDIS=redis
 # Copy bin from builder to this new image
 COPY --from=builder /usr/src/app/target/worker-jar-with-dependencies.jar /bin/

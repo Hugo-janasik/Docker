@@ -10,7 +10,7 @@ RUN npm config set package-lock false
 RUN npm install
 
 ENV PORT=80
-ENV HOST=db
+#ENV HOST=db
 EXPOSE 80
 
 CMD [ "npm", "start" ]
