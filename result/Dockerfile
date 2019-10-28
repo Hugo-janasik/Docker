@@ -11,5 +11,6 @@ RUN npm install
 
 ENV PORT=80
 ENV HOST=db
+EXPOSE 80
 
 CMD [ "npm", "start" ]
